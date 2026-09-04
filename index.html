@@ -558,7 +558,7 @@ var CONFIG = {
   WATERMARK: '为邓恩和与朱婉彤而作 · 云顶道庭·彤恩卷'
 };
 /* v5.6 更新检查：启动时从云端拉版本号，有新版本自动弹窗提示下载（方案B） */
-var GAME_VERSION='v5.6';
+var GAME_VERSION='v5.6.1';
 var UPDATE_JSON_URL='https://njrnwdcdkzhceonaguok.supabase.co/storage/v1/object/public/game/version.json';
 function checkUpdate(){
   try{
@@ -3151,7 +3151,7 @@ Game.prototype={
     /* v5.6 农历节日公历映射表（2026-2027，覆盖到明年后需续表） */
     var MAP={
       '2026-09-25':{name:'中秋 · 月圆夜',emoji:'🌕',note:'海上生明月，天涯共此时——广寒仙子特赐月饼礼盒',double:true,gift:'moon2026'},
-      '2026-10-01':{name:'国庆 · 家国同庆',emoji:'🇨🇳',note:'山河无恙，人间皆安',double:false},
+      '2026-10-01':{name:'国庆 · 家国同庆',emoji:'🇨🇳',note:'山河无恙，人间皆安——宗门特备国庆礼盒',double:true,gift:'guoqing2026'},
       '2027-02-06':{name:'春节 · 开岁朝贺',emoji:'🧨',note:'爆竹声中一岁除，仙门贺岁',double:true},
       '2027-02-20':{name:'上元 · 花灯节',emoji:'🏮',note:'花灯如昼，人间共赏',double:true},
       '2027-06-09':{name:'端午 · 龙舟渡',emoji:'🚣',note:'粽叶飘香，邪祟不侵',double:true},
@@ -6293,11 +6293,14 @@ document.addEventListener('click',function(e){
       var gk='gift_'+festG.gift;
       if(g[gk]){ toast('这份礼盒你已经领过啦'); break; }
       g[gk]=1;
-      g.res.lingShi+=888;
-      game.addQingYuan(15);
-      game.addLog('🥮 领取'+festG.name+'月饼礼盒：灵石+888，情缘+15',true);
-      game.historyPush(festG.name,'领取节日月饼礼盒（灵石+888，情缘+15）');
-      toast('🥮 月饼礼盒已领取：灵石+888，情缘+15');
+      var giftName = festG.gift==='moon2026' ? '月饼礼盒' : '国庆礼盒';
+      var giftLs = festG.gift==='moon2026' ? 888 : 1010;
+      var giftQy = festG.gift==='moon2026' ? 15 : 10;
+      g.res.lingShi+=giftLs;
+      game.addQingYuan(giftQy);
+      game.addLog('🎁 领取'+festG.name+giftName+'：灵石+'+giftLs+'，情缘+'+giftQy,true);
+      game.historyPush(festG.name,'领取节日'+giftName+'（灵石+'+giftLs+'，情缘+'+giftQy+'）');
+      toast('🎁 '+giftName+'已领取：灵石+'+giftLs+'，情缘+'+giftQy);
       game.saveProfile(function(){});
       game.checkAchievements();
       render();
